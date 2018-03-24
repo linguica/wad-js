@@ -151,6 +151,17 @@ function createLumpList(wad) {
 
 
 						break;
+					case "NODES":
+						mapdata.parseNodes(wad.getLump(i));
+						$("#preview").html("");
+						var width = window.innerWidth
+							|| document.documentElement.clientWidth
+							|| document.body.clientWidth;
+						var height = window.innerHeight
+							|| document.documentElement.clientHeight
+							|| document.body.clientHeight;
+						document.getElementById("preview").appendChild(map.toCanvas((width - $('#lumpList').width()) * 0.8,height * 0.8));
+						break;
 					default:
 						$("#preview").html("Unable to preview "+wad.lumps[i].name+" lumps");
 						break;
