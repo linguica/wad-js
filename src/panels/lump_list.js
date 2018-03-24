@@ -114,7 +114,7 @@ function createLumpList(wad) {
 				var height = window.innerHeight
 					|| document.documentElement.clientHeight
 					|| document.body.clientHeight;
-				document.getElementById("preview").appendChild(map.toCanvas((width - $('#lumpList').width()) * 0.8,height * 0.8));
+				document.getElementById("preview").appendChild(map.nodesToCanvas((width - $('#lumpList').width()) * 0.8,height * 0.8));
 				break;
 			case MAPDATA:
 				mapdata = Object.create(MapData);
@@ -152,6 +152,7 @@ function createLumpList(wad) {
 
 						break;
 					case "NODES":
+						mapdata.load(wad,wad.lumps[i].name);
 						mapdata.parseNodes(wad.getLump(i));
 						$("#preview").html("");
 						var width = window.innerWidth
@@ -160,7 +161,7 @@ function createLumpList(wad) {
 						var height = window.innerHeight
 							|| document.documentElement.clientHeight
 							|| document.body.clientHeight;
-						document.getElementById("preview").appendChild(map.toCanvas((width - $('#lumpList').width()) * 0.8,height * 0.8));
+						document.getElementById("preview").appendChild(mapdata.nodesToCanvas((width - $('#lumpList').width()) * 0.8,height * 0.8));
 						break;
 					default:
 						$("#preview").html("Unable to preview "+wad.lumps[i].name+" lumps");

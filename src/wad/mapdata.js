@@ -230,21 +230,21 @@ var MapData = {
         var len = dv.byteLength / entryLen;
         for (var i = 0; i < len; i++) {
             r = Object.create(Node);
-            r.partitionX = dv.getUint16((i * entryLen) + 0,true);
-            r.partitionY = dv.getUint16((i * entryLen) + 2,true);
-            r.changeX = dv.getUint16((i * entryLen) + 4,true);
-            r.changeY = dv.getUint16((i * entryLen) + 6,true);
+            r.partitionX = dv.getInt16((i * entryLen) + 0,true);
+            r.partitionY = dv.getInt16((i * entryLen) + 2,true);
+            r.changeX = dv.getInt16((i * entryLen) + 4,true);
+            r.changeY = dv.getInt16((i * entryLen) + 6,true);
             r.boundsRight = {
-                "top":dv.getUint16((i * entryLen) + 8,true),
-                "bottom":dv.getUint16((i * entryLen) + 10,true),
-                "left":dv.getUint16((i * entryLen) + 12,true),
-                "right":dv.getUint16((i * entryLen) + 14,true)
+                "top":dv.getInt16((i * entryLen) + 8,true),
+                "bottom":dv.getInt16((i * entryLen) + 10,true),
+                "left":dv.getInt16((i * entryLen) + 12,true),
+                "right":dv.getInt16((i * entryLen) + 14,true)
             };
             r.boundsLeft = {
-                "top":dv.getUint16((i * entryLen) + 16,true),
-                "bottom":dv.getUint16((i * entryLen) + 18,true),
-                "left":dv.getUint16((i * entryLen) + 20,true),
-                "right":dv.getUint16((i * entryLen) + 22,true)
+                "top":dv.getInt16((i * entryLen) + 16,true),
+                "bottom":dv.getInt16((i * entryLen) + 18,true),
+                "left":dv.getInt16((i * entryLen) + 20,true),
+                "right":dv.getInt16((i * entryLen) + 22,true)
             };
             r.childRight = dv.getUint16((i * entryLen) + 24,true);
             r.childLeft = dv.getUint16((i * entryLen) + 26,true);
@@ -371,7 +371,7 @@ var MapData = {
         return canvas;
     },
     
-    nodeToCanvas : function(width,height) {
+    nodesToCanvas : function(width,height) {
           
         // Early-out if it is not a Doom format map.
         if (this.format == "UDMF") {
@@ -404,6 +404,44 @@ var MapData = {
             //draw every node
             l = this.nodes[i];
             
+            x1 = l.boundsRight.left;
+            x2 = l.boundsRight.right;
+            y1 = l.boundsRight.top;
+            y2 = l.boundsRight.bottom;
+
+            //scale to fit the shit ok
+            x1 -= this.left;
+            x2 -= this.left;
+            y1 -= this.top;
+            y2 -= this.top;
+            
+            x1 *= r;
+            x2 *= r;
+            y1 *= r;
+            y2 *= r;
+
+            context.strokeStyle = this.wad.playpal.palettes[0][108]; //default
+            context.strokeRect(x1 + 5.5, canvas.height - y2 - 5.5, x2-x1, y2-y1);
+
+            x1 = l.boundsLeft.left;
+            x2 = l.boundsLeft.right;
+            y1 = l.boundsLeft.top;
+            y2 = l.boundsLeft.bottom;
+
+            //scale to fit the shit ok
+            x1 -= this.left;
+            x2 -= this.left;
+            y1 -= this.top;
+            y2 -= this.top;
+            
+            x1 *= r;
+            x2 *= r;
+            y1 *= r;
+            y2 *= r;
+
+            context.strokeStyle = this.wad.playpal.palettes[0][108]; //default
+            context.strokeRect(x1 + 5.5, canvas.height - y2 - 5.5, x2-x1, y2-y1);
+
             var x1 = l.partitionX;
             var y1 = l.partitionY;
             var x2 = l.partitionX + l.changeX;
