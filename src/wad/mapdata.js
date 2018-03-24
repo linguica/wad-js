@@ -371,6 +371,68 @@ var MapData = {
         return canvas;
     },
     
+    nodeToCanvas : function(width,height) {
+          
+        // Early-out if it is not a Doom format map.
+        if (this.format == "UDMF") {
+           var output = document.createElement("div");
+           output.innerHTML = "Unable to render "+this.format+" format maps.";
+           return output;
+        }
+
+        var canvas = document.createElement("canvas");
+        
+        var mwidth = this.right - this.left;
+        var mheight = this.bottom - this.top;
+        var r;
+        
+        if ((height/width) < (mwidth/mheight)) {
+            canvas.height = height + 10;
+            r = height / mheight;
+            canvas.width = (r * mwidth) + 10;
+        } else {
+            canvas.width = width + 10;
+            r = width / mwidth;
+            canvas.height = (r * mheight) + 10;
+        }
+        
+        var context = canvas.getContext("2d");
+        context.fillStyle = this.wad.playpal.palettes[0][0];
+        context.fillRect(0,0,canvas.width,canvas.height);
+        context.imageSmoothingEnabled = false;
+        for (var i = 0; i < this.nodes.length; i++) {
+            //draw every node
+            l = this.nodes[i];
+            
+            var x1 = l.partitionX;
+            var y1 = l.partitionY;
+            var x2 = l.partitionX + l.changeX;
+            var y2 = l.partitionY + l.changeY;
+            
+            //scale to fit the shit ok
+            x1 -= this.left;
+            x2 -= this.left;
+            y1 -= this.top;
+            y2 -= this.top;
+            
+            x1 *= r;
+            x2 *= r;
+            y1 *= r;
+            y2 *= r;
+            
+            //color checking 
+            context.strokeStyle = this.wad.playpal.palettes[0][96]; //default
+
+            //context.translate(0.5,0.5);
+            context.beginPath();
+            context.moveTo(Math.floor(x1) + 5.5, Math.floor(canvas.height - y1 - 5) + 0.5);
+            context.lineTo(Math.floor(x2) + 5.5, Math.floor(canvas.height - y2 - 5) + 0.5);
+            context.stroke();
+        }
+        
+        return canvas;
+    },
+
     getDoomThingName : function(id) {
         for (var prop in DoomThingTable) {
             if (DoomThingTable.hasOwnProperty(prop)) {
